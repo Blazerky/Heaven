@@ -1,1 +1,1265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GAMESENSE — Elevate Your Game</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #00ff7f;
+    --green-dim: #00c960;
+    --green-glow: rgba(0,255,127,0.15);
+    --bg: #0a0a0a;
+    --bg2: #111111;
+    --bg3: #161616;
+    --card: #131313;
+    --border: rgba(0,255,127,0.12);
+    --text: #e8e8e8;
+    --muted: #666;
+    --white: #ffffff;
+  }
 
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    font-weight: 400;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 48px;
+    height: 58px;
+    background: rgba(10,10,10,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 1.25rem;
+    letter-spacing: 0.06em;
+    color: var(--white);
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--green); }
+
+  .nav-login {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 7px 22px;
+    font-family: 'Barlow', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.2s;
+    letter-spacing: 0.04em;
+  }
+  .nav-login:hover {
+    border-color: var(--green);
+    color: var(--green);
+  }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    padding: 100px 48px 60px;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 70% 55%, rgba(0,255,127,0.04) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 60% at 15% 50%, rgba(0,255,127,0.03) 0%, transparent 60%);
+  }
+
+  /* Diamond decorations */
+  .diamonds {
+    position: absolute;
+    top: 60px; left: 0;
+    width: 320px;
+    height: 380px;
+    pointer-events: none;
+    opacity: 0.07;
+  }
+  .diamonds::before, .diamonds::after {
+    content: '';
+    position: absolute;
+    border: 1.5px solid var(--green);
+    transform: rotate(45deg);
+  }
+  .diamonds::before {
+    width: 200px; height: 200px;
+    top: 40px; left: 20px;
+  }
+  .diamonds::after {
+    width: 140px; height: 140px;
+    top: 90px; left: 70px;
+  }
+
+  .diamonds-right {
+    position: absolute;
+    bottom: 0; right: 0;
+    width: 320px;
+    height: 380px;
+    pointer-events: none;
+    opacity: 0.07;
+  }
+  .diamonds-right::before, .diamonds-right::after {
+    content: '';
+    position: absolute;
+    border: 1.5px solid var(--green);
+    transform: rotate(45deg);
+  }
+  .diamonds-right::before {
+    width: 200px; height: 200px;
+    bottom: 40px; right: 20px;
+  }
+  .diamonds-right::after {
+    width: 140px; height: 140px;
+    bottom: 90px; right: 70px;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 540px;
+  }
+
+  .hero-content h1 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: clamp(3.5rem, 7vw, 5.5rem);
+    line-height: 0.95;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--white);
+    animation: fadeUp 0.8s ease both;
+  }
+
+  .hero-content h1 .accent {
+    color: var(--green);
+    display: block;
+  }
+
+  .hero-desc {
+    margin-top: 22px;
+    font-size: 0.97rem;
+    color: var(--muted);
+    line-height: 1.6;
+    max-width: 420px;
+    animation: fadeUp 0.8s 0.15s ease both;
+  }
+
+  .hero-buttons {
+    display: flex;
+    gap: 14px;
+    margin-top: 34px;
+    animation: fadeUp 0.8s 0.3s ease both;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    background: var(--green);
+    color: #000;
+    padding: 13px 28px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 2px;
+    transition: all 0.2s;
+    border: none;
+    cursor: pointer;
+  }
+  .btn-primary:hover {
+    background: #00ff9f;
+    box-shadow: 0 0 24px rgba(0,255,127,0.4);
+    transform: translateY(-1px);
+  }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    background: transparent;
+    color: var(--text);
+    padding: 12px 28px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  .btn-secondary:hover {
+    border-color: var(--green);
+    color: var(--green);
+  }
+
+  .hero-note {
+    margin-top: 22px;
+    font-size: 0.78rem;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    animation: fadeUp 0.8s 0.45s ease both;
+  }
+  .hero-note .dot {
+    width: 7px; height: 7px;
+    background: var(--green);
+    border-radius: 50%;
+    display: inline-block;
+    animation: pulse 2s infinite;
+  }
+
+  /* UI Screenshot */
+  .hero-visual {
+    position: absolute;
+    right: 48px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: min(500px, 42vw);
+    animation: fadeUp 0.8s 0.2s ease both;
+    z-index: 1;
+  }
+
+  .hero-visual .ui-mock {
+    background: #0d0d0d;
+    border: 1px solid rgba(0,255,127,0.18);
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow:
+      0 0 60px rgba(0,255,127,0.07),
+      0 32px 80px rgba(0,0,0,0.6);
+  }
+
+  .ui-mock-topbar {
+    background: #161616;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    padding: 8px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .ui-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .ui-dot.r { background: #ff5f57; }
+  .ui-dot.y { background: #febc2e; }
+  .ui-dot.g { background: #28c840; }
+
+  .ui-mock-body {
+    display: flex;
+    min-height: 280px;
+  }
+
+  .ui-sidebar {
+    width: 44px;
+    background: #0f0f0f;
+    border-right: 1px solid rgba(255,255,255,0.04);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 14px 0;
+    gap: 16px;
+  }
+
+  .ui-icon {
+    width: 22px; height: 22px;
+    border-radius: 3px;
+    background: rgba(255,255,255,0.05);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .ui-icon.active {
+    background: rgba(0,255,127,0.15);
+    color: var(--green);
+  }
+
+  .ui-main {
+    flex: 1;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .ui-tabs {
+    display: flex;
+    gap: 6px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .ui-tab {
+    font-size: 9px;
+    padding: 4px 10px;
+    border-radius: 2px;
+    background: rgba(255,255,255,0.04);
+    color: var(--muted);
+    cursor: pointer;
+  }
+  .ui-tab.active {
+    background: rgba(0,255,127,0.15);
+    color: var(--green);
+  }
+
+  .ui-rows { display: flex; flex-direction: column; gap: 6px; }
+  .ui-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 8px;
+    background: rgba(255,255,255,0.02);
+    border-radius: 2px;
+  }
+  .ui-row-label { font-size: 8px; color: #aaa; }
+  .ui-toggle {
+    width: 24px; height: 12px;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.08);
+    position: relative;
+    cursor: pointer;
+  }
+  .ui-toggle.on { background: rgba(0,255,127,0.4); }
+  .ui-toggle::after {
+    content: '';
+    position: absolute;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #555;
+    top: 2px; left: 2px;
+    transition: 0.15s;
+  }
+  .ui-toggle.on::after {
+    background: var(--green);
+    left: 14px;
+  }
+
+  .ui-slider-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 8px;
+  }
+  .ui-slider-label { font-size: 8px; color: #777; width: 80px; }
+  .ui-slider-track {
+    flex: 1;
+    height: 2px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 1px;
+    position: relative;
+    overflow: visible;
+  }
+  .ui-slider-fill {
+    height: 100%;
+    background: var(--green);
+    border-radius: 1px;
+    position: relative;
+  }
+  .ui-slider-fill::after {
+    content: '';
+    position: absolute;
+    right: -3px; top: -3px;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 6px var(--green);
+  }
+
+  /* ── SECTION: WHY ── */
+  .section {
+    padding: 100px 48px;
+    position: relative;
+  }
+
+  .section-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--white);
+  }
+
+  .section-divider {
+    width: 36px;
+    height: 2px;
+    background: var(--green);
+    margin: 12px auto 0;
+  }
+
+  .section-sub {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin-top: 14px;
+  }
+
+  /* Feature cards */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+    margin-top: 60px;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .feature-card {
+    text-align: center;
+    padding: 10px;
+  }
+
+  .feature-icon {
+    width: 52px; height: 52px;
+    margin: 0 auto 18px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--green-glow);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    font-size: 1.3rem;
+  }
+
+  .feature-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--white);
+    margin-bottom: 10px;
+  }
+
+  .feature-desc {
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* ── REQUIREMENTS ── */
+  #requirements {
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .req-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 50px;
+    max-width: 960px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .req-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 28px 26px 26px;
+    transition: border-color 0.2s;
+  }
+  .req-card:hover { border-color: rgba(0,255,127,0.3); }
+
+  .req-card-icon {
+    font-size: 1.4rem;
+    margin-bottom: 16px;
+  }
+
+  .req-card-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--white);
+    margin-bottom: 18px;
+  }
+
+  .req-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .req-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.85rem;
+    color: #bbb;
+  }
+
+  .req-check {
+    color: var(--green);
+    font-size: 0.8rem;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* ── CTA ── */
+  #cta {
+    text-align: center;
+    padding: 100px 48px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  #cta::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px; height: 300px;
+    background: radial-gradient(ellipse, rgba(0,255,127,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  #cta h2 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: clamp(2.2rem, 5vw, 3.5rem);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--white);
+    position: relative;
+  }
+
+  #cta h2 span { color: var(--green); }
+
+  #cta p {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin: 14px auto 32px;
+    max-width: 440px;
+    line-height: 1.6;
+    position: relative;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    padding: 28px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .footer-logo {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 1rem;
+    letter-spacing: 0.06em;
+    color: var(--white);
+  }
+
+  .footer-note {
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(0,255,127,0.4); }
+    50%       { opacity: 0.7; box-shadow: 0 0 0 5px rgba(0,255,127,0); }
+  }
+
+  /* Scroll reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+
+  @media (max-width: 900px) {
+    nav { padding: 0 20px; }
+    .nav-links { display: none; }
+    #hero { flex-direction: column; padding: 100px 24px 60px; align-items: flex-start; }
+    .hero-visual { position: relative; right: auto; top: auto; transform: none; width: 100%; margin-top: 40px; }
+    .features-grid, .req-grid { grid-template-columns: 1fr; max-width: 480px; }
+    .section { padding: 70px 24px; }
+    footer { flex-direction: column; gap: 10px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">GAMESENSE</a>
+  <ul class="nav-links">
+    <li><a href="#download">Download</a></li>
+    <li><a href="#">Lua API</a></li>
+    <li><a href="#requirements">Requirements</a></li>
+    <li><a href="#">FAQ</a></li>
+    <li><a href="#">Contacts</a></li>
+  </ul>
+  <button class="nav-login">Login</button>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="diamonds"></div>
+  <div class="diamonds-right"></div>
+
+  <div class="hero-content">
+    <h1>ELEVATE<span class="accent">YOUR GAME</span></h1>
+    <p class="hero-desc">GameSense is a free CS:GO DLC for HvH with advanced ragebot, smooth legitbot, and powerful Lua API.</p>
+    <div class="hero-buttons">
+      <a href="https://t.me/Savedthrow/2" target="_blank" class="btn-primary" id="download">
+        ↓ DOWNLOAD NOW
+      </a>
+      <a href="#requirements" class="btn-secondary">FAQ →</a>
+    </div>
+    <div class="hero-note">
+      <span class="dot"></span>
+      The developer(s) will never write to you first.
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <div class="gs-menu">
+      <!-- Top weapon-type tabs -->
+      <div class="gs-toptabs">
+        <span class="gs-toptab active">Global</span>
+        <span class="gs-toptab">Pistol</span>
+        <span class="gs-toptab">Rifle</span>
+        <span class="gs-toptab">Heavy</span>
+        <span class="gs-toptab">SMG</span>
+        <span class="gs-toptab">Scout</span>
+        <span class="gs-toptab">AWP</span>
+        <span class="gs-toptab">Auto</span>
+      </div>
+
+      <div class="gs-body">
+        <!-- Sidebar icons -->
+        <div class="gs-sidebar">
+          <div class="gs-sicon active" title="Aimbot">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.2"/><circle cx="8" cy="8" r="2" fill="currentColor"/><line x1="8" y1="1" x2="8" y2="4" stroke="currentColor" stroke-width="1.2"/><line x1="8" y1="12" x2="8" y2="15" stroke="currentColor" stroke-width="1.2"/><line x1="1" y1="8" x2="4" y2="8" stroke="currentColor" stroke-width="1.2"/><line x1="12" y1="8" x2="15" y2="8" stroke="currentColor" stroke-width="1.2"/></svg>
+          </div>
+          <div class="gs-sicon" title="Anti-aim">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2 L14 5 L14 9 C14 12 11 14.5 8 15 C5 14.5 2 12 2 9 L2 5 Z" stroke="currentColor" stroke-width="1.2" fill="none"/><line x1="5" y1="8" x2="11" y2="8" stroke="currentColor" stroke-width="1.2"/></svg>
+          </div>
+          <div class="gs-sicon" title="Legit">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.2"/><circle cx="8" cy="8" r="3.5" stroke="currentColor" stroke-width="1"/></svg>
+          </div>
+          <div class="gs-sicon" title="Visuals">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M1 8 C3 4 5 3 8 3 C11 3 13 4 15 8 C13 12 11 13 8 13 C5 13 3 12 1 8Z" stroke="currentColor" stroke-width="1.2" fill="none"/><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.1"/></svg>
+          </div>
+          <div class="gs-sicon" title="Misc">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.2"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.22 3.22l1.41 1.41M11.37 11.37l1.41 1.41M3.22 12.78l1.41-1.41M11.37 4.63l1.41-1.41" stroke="currentColor" stroke-width="1.2"/></svg>
+          </div>
+          <div class="gs-sicon" title="Players">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5" r="3" stroke="currentColor" stroke-width="1.2"/><path d="M2 14 C2 10.5 4.5 8.5 8 8.5 C11.5 8.5 14 10.5 14 14" stroke="currentColor" stroke-width="1.2"/></svg>
+          </div>
+          <div class="gs-sicon" title="Config">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="9" y="2" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="2" y="9" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="9" y="9" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.2"/></svg>
+          </div>
+        </div>
+
+        <!-- Content panels side by side -->
+        <div class="gs-panels">
+
+          <!-- LEFT: Aimbot -->
+          <div class="gs-panel">
+            <div class="gs-panel-title">Aimbot</div>
+            <div class="gs-panel-content">
+
+              <div class="gs-item">
+                <div class="gs-cb on"></div>
+                <span class="gs-label">Enabled</span>
+                <span class="gs-bind">[-]</span>
+              </div>
+
+              <div class="gs-item gs-indent">
+                <span class="gs-label dim">Target selection</span>
+              </div>
+              <div class="gs-item gs-indent gs-dropdown-row">
+                <div class="gs-dropdown">Cycle <span class="gs-arr">▾</span></div>
+              </div>
+
+              <div class="gs-item gs-indent">
+                <span class="gs-label dim">Target hitbox</span>
+              </div>
+              <div class="gs-item gs-indent gs-dropdown-row">
+                <div class="gs-dropdown">Head <span class="gs-arr">▾</span></div>
+              </div>
+
+              <div class="gs-item gs-indent">
+                <div class="gs-cb"></div>
+                <span class="gs-label dim">Multi-point</span>
+                <span class="gs-bind">[-]</span>
+              </div>
+              <div class="gs-item gs-indent gs-dropdown-row">
+                <div class="gs-dropdown">— <span class="gs-arr">▾</span></div>
+              </div>
+
+              <div class="gs-spacer"></div>
+
+              <div class="gs-item">
+                <div class="gs-cb"></div>
+                <span class="gs-label">Prefer safe point</span>
+              </div>
+              <div class="gs-item">
+                <div class="gs-cb"></div>
+                <span class="gs-label">Force safe point</span>
+                <span class="gs-bind">[-]</span>
+              </div>
+              <div class="gs-item">
+                <div class="gs-cb"></div>
+                <span class="gs-label">Avoid unsafe hitboxes</span>
+              </div>
+              <div class="gs-item gs-dropdown-row">
+                <div class="gs-dropdown" style="width:100%">— <span class="gs-arr">▾</span></div>
+              </div>
+
+              <div class="gs-spacer"></div>
+
+              <div class="gs-item">
+                <div class="gs-cb"></div>
+                <span class="gs-label">Automatic fire</span>
+              </div>
+              <div class="gs-item">
+                <div class="gs-cb"></div>
+                <span class="gs-label">Automatic penetration</span>
+              </div>
+              <div class="gs-item">
+                <div class="gs-cb"></div>
+                <span class="gs-label">Silent aim</span>
+              </div>
+
+              <div class="gs-slider-block">
+                <div class="gs-slider-label">Minimum hit chance</div>
+                <div class="gs-slider-wrap">
+                  <div class="gs-slider-track">
+                    <div class="gs-slider-fill" style="width:50%">
+                      <div class="gs-slider-thumb"></div>
+                    </div>
+                  </div>
+                  <span class="gs-slider-val">50%</span>
+                </div>
+              </div>
+
+              <div class="gs-slider-block">
+                <div class="gs-slider-label">Minimum damage</div>
+                <div class="gs-slider-wrap">
+                  <div class="gs-slider-track">
+                    <div class="gs-slider-fill" style="width:10%">
+                      <div class="gs-slider-thumb"></div>
+                    </div>
+                  </div>
+                  <span class="gs-slider-val">10</span>
+                </div>
+              </div>
+
+              <div class="gs-item">
+                <div class="gs-cb"></div>
+                <span class="gs-label">Automatic scope</span>
+              </div>
+              <div class="gs-item">
+                <div class="gs-cb"></div>
+                <span class="gs-label">Reduce aim step</span>
+              </div>
+
+              <div class="gs-slider-block">
+                <div class="gs-slider-label">Maximum FOV</div>
+                <div class="gs-slider-wrap">
+                  <div class="gs-slider-track">
+                    <div class="gs-slider-fill" style="width:100%">
+                      <div class="gs-slider-thumb"></div>
+                    </div>
+                  </div>
+                  <span class="gs-slider-val">180°</span>
+                </div>
+              </div>
+
+              <div class="gs-item">
+                <div class="gs-cb on" style="background:rgba(180,220,0,0.7); border-color:rgba(200,240,0,0.8);"></div>
+                <span class="gs-label">Log misses due to spread</span>
+              </div>
+
+              <div class="gs-item">
+                <span class="gs-label dim">Low FPS mitigations</span>
+              </div>
+              <div class="gs-item gs-dropdown-row">
+                <div class="gs-dropdown">— <span class="gs-arr">▾</span></div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- RIGHT: Other -->
+          <div class="gs-panel">
+            <div class="gs-panel-title">Other</div>
+            <div class="gs-panel-content">
+
+              <div class="gs-item">
+                <div class="gs-cb"></div>
+                <span class="gs-label">Remove recoil</span>
+              </div>
+              <div class="gs-item">
+                <div class="gs-cb"></div>
+                <span class="gs-label">Accuracy boost</span>
+              </div>
+              <div class="gs-item gs-dropdown-row">
+                <div class="gs-dropdown">Low <span class="gs-arr">▾</span></div>
+              </div>
+
+              <div class="gs-spacer"></div>
+
+              <div class="gs-item">
+                <div class="gs-cb"></div>
+                <span class="gs-label">Delay shot</span>
+              </div>
+              <div class="gs-item">
+                <div class="gs-cb"></div>
+                <span class="gs-label">Quick stop</span>
+                <span class="gs-bind">[-]</span>
+              </div>
+              <div class="gs-item">
+                <div class="gs-cb"></div>
+                <span class="gs-label">Quick peek assist</span>
+                <span class="gs-bind">[-]</span>
+              </div>
+              <div class="gs-item">
+                <div class="gs-cb"></div>
+                <span class="gs-label">Anti-aim correction</span>
+              </div>
+              <div class="gs-item">
+                <div class="gs-cb"></div>
+                <span class="gs-label">Force body aim</span>
+                <span class="gs-bind">[-]</span>
+              </div>
+              <div class="gs-item">
+                <div class="gs-cb"></div>
+                <span class="gs-label">Force body aim on peek</span>
+              </div>
+              <div class="gs-item">
+                <div class="gs-cb"></div>
+                <span class="gs-label">Duck peek assist</span>
+                <span class="gs-bind">[-]</span>
+              </div>
+              <div class="gs-item">
+                <div class="gs-cb"></div>
+                <span class="gs-label highlight">Double tap</span>
+                <span class="gs-bind">[-]</span>
+              </div>
+
+            </div>
+          </div>
+
+        </div><!-- /gs-panels -->
+      </div><!-- /gs-body -->
+    </div><!-- /gs-menu -->
+  </div>
+</section>
+
+<style>
+/* ── REAL GAMESENSE MENU REPLICA ── */
+.gs-menu {
+  background: #1a1a1e;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 3px;
+  overflow: hidden;
+  font-family: 'Barlow', 'Segoe UI', sans-serif;
+  font-size: 11px;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.7), 0 0 40px rgba(0,255,127,0.04);
+  user-select: none;
+}
+
+.gs-toptabs {
+  display: flex;
+  background: #141416;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  overflow-x: auto;
+}
+.gs-toptab {
+  padding: 7px 14px;
+  font-size: 10px;
+  color: #666;
+  cursor: pointer;
+  white-space: nowrap;
+  border-right: 1px solid rgba(255,255,255,0.04);
+  transition: color 0.15s, background 0.15s;
+  letter-spacing: 0.03em;
+}
+.gs-toptab:hover { color: #aaa; background: rgba(255,255,255,0.03); }
+.gs-toptab.active {
+  color: #ccc;
+  background: #1a1a1e;
+  border-bottom: 1px solid #1a1a1e;
+  margin-bottom: -1px;
+}
+
+.gs-body {
+  display: flex;
+}
+
+.gs-sidebar {
+  width: 36px;
+  background: #111113;
+  border-right: 1px solid rgba(255,255,255,0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 0;
+  gap: 2px;
+}
+.gs-sicon {
+  width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  color: #444;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: color 0.15s, background 0.15s;
+}
+.gs-sicon:hover { color: #888; background: rgba(255,255,255,0.05); }
+.gs-sicon.active { color: #00e676; background: rgba(0,230,118,0.1); }
+
+.gs-panels {
+  display: flex;
+  flex: 1;
+  min-height: 340px;
+}
+
+.gs-panel {
+  flex: 1;
+  border-right: 1px solid rgba(255,255,255,0.05);
+  display: flex;
+  flex-direction: column;
+}
+.gs-panel:last-child { border-right: none; }
+
+.gs-panel-title {
+  padding: 8px 12px 6px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: #888;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  background: rgba(255,255,255,0.015);
+}
+
+.gs-panel-content {
+  padding: 6px 0;
+  overflow-y: auto;
+  max-height: 340px;
+}
+.gs-panel-content::-webkit-scrollbar { width: 3px; }
+.gs-panel-content::-webkit-scrollbar-track { background: transparent; }
+.gs-panel-content::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+
+.gs-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 10px;
+  min-height: 18px;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+.gs-item:hover { background: rgba(255,255,255,0.03); }
+.gs-indent { padding-left: 22px; }
+
+.gs-cb {
+  width: 10px; height: 10px;
+  border: 1px solid #444;
+  border-radius: 1px;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+  background: transparent;
+}
+.gs-cb.on {
+  background: rgba(0,230,118,0.25);
+  border-color: rgba(0,230,118,0.7);
+}
+.gs-cb.on::after {
+  content: '';
+  width: 5px; height: 5px;
+  background: #00e676;
+  border-radius: 0.5px;
+}
+
+.gs-label {
+  flex: 1;
+  color: #bbb;
+  font-size: 10.5px;
+  line-height: 1.3;
+}
+.gs-label.dim { color: #777; }
+.gs-label.highlight { color: #ffe066; }
+
+.gs-bind {
+  color: #444;
+  font-size: 9px;
+  font-family: monospace;
+  flex-shrink: 0;
+}
+
+.gs-spacer {
+  height: 8px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  margin: 3px 0;
+}
+
+.gs-dropdown-row { padding-top: 2px; padding-bottom: 3px; }
+.gs-dropdown {
+  background: #111113;
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #aaa;
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 2px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 120px;
+  transition: border-color 0.15s;
+}
+.gs-dropdown:hover { border-color: rgba(0,230,118,0.3); }
+.gs-arr { color: #555; font-size: 8px; margin-left: 6px; }
+
+.gs-slider-block {
+  padding: 4px 10px 2px;
+}
+.gs-slider-label {
+  font-size: 10px;
+  color: #888;
+  margin-bottom: 4px;
+}
+.gs-slider-wrap {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.gs-slider-track {
+  flex: 1;
+  height: 3px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 2px;
+  position: relative;
+  cursor: pointer;
+}
+.gs-slider-fill {
+  height: 100%;
+  background: #00c85a;
+  border-radius: 2px;
+  position: relative;
+}
+.gs-slider-thumb {
+  position: absolute;
+  right: -3px;
+  top: -4px;
+  width: 9px; height: 9px;
+  background: #eee;
+  border-radius: 50%;
+  box-shadow: 0 0 4px rgba(0,0,0,0.6);
+}
+.gs-slider-val {
+  font-size: 9px;
+  color: #888;
+  width: 28px;
+  text-align: right;
+  flex-shrink: 0;
+  font-family: monospace;
+}
+</style>
+
+<!-- WHY CHOOSE -->
+<section class="section" id="why">
+  <h2 class="section-title reveal">WHY CHOOSE GAMESENSE</h2>
+  <div class="section-divider"></div>
+  <p class="section-sub reveal reveal-delay-1">Built different. Designed to win.</p>
+
+  <div class="features-grid">
+    <div class="feature-card reveal reveal-delay-1">
+      <div class="feature-icon">🔄</div>
+      <div class="feature-title">Regular Updates</div>
+      <p class="feature-desc">Constant improvements and new features to keep you ahead of the competition.</p>
+    </div>
+    <div class="feature-card reveal reveal-delay-2">
+      <div class="feature-icon">⚡</div>
+      <div class="feature-title">High Performance</div>
+      <p class="feature-desc">Optimized code ensures minimal impact on your game performance.</p>
+    </div>
+    <div class="feature-card reveal reveal-delay-3">
+      <div class="feature-icon">🕐</div>
+      <div class="feature-title">24/7 Support</div>
+      <p class="feature-desc">Our dedicated team is always ready to assist you with any questions.</p>
+    </div>
+  </div>
+</section>
+
+<!-- REQUIREMENTS -->
+<section class="section" id="requirements">
+  <h2 class="section-title reveal">SYSTEM REQUIREMENTS</h2>
+  <div class="section-divider"></div>
+  <p class="section-sub reveal reveal-delay-1">Make sure your system meets these requirements</p>
+
+  <div class="req-grid">
+    <div class="req-card reveal reveal-delay-1">
+      <div class="req-card-icon">🖥️</div>
+      <div class="req-card-title">Minimum</div>
+      <ul class="req-list">
+        <li><span class="req-check">✓</span> Intel Core i3 / AMD Ryzen 3</li>
+        <li><span class="req-check">✓</span> 4GB RAM</li>
+        <li><span class="req-check">✓</span> CS:GO installed</li>
+        <li><span class="req-check">✓</span> 15MB free disk space</li>
+      </ul>
+    </div>
+    <div class="req-card reveal reveal-delay-2">
+      <div class="req-card-icon">⚙️</div>
+      <div class="req-card-title">Recommended</div>
+      <ul class="req-list">
+        <li><span class="req-check">✓</span> Intel Core i5 / AMD Ryzen 5</li>
+        <li><span class="req-check">✓</span> 8GB RAM</li>
+        <li><span class="req-check">✓</span> CS:GO installed</li>
+      </ul>
+    </div>
+    <div class="req-card reveal reveal-delay-3">
+      <div class="req-card-icon">🛡️</div>
+      <div class="req-card-title">Notes</div>
+      <ul class="req-list">
+        <li><span class="req-check">✓</span> Disable antivirus during load process</li>
+        <li><span class="req-check">✓</span> Run as administrator</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <h2 class="reveal">READY TO <span>DOMINATE</span>?</h2>
+  <p class="reveal reveal-delay-1">Download for free and start winning today. No subscriptions, no hidden fees.</p>
+  <a href="https://t.me/Savedthrow/2" target="_blank" class="btn-primary reveal reveal-delay-2">
+    ↓ DOWNLOAD NOW — FREE
+  </a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-logo">GAMESENSE</span>
+  <span class="footer-note">© 2026 GameSense. For educational purposes only.</span>
+</footer>
+
+<script>
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Checkbox clicks
+  document.querySelectorAll('.gs-cb').forEach(cb => {
+    cb.addEventListener('click', e => { e.stopPropagation(); cb.classList.toggle('on'); });
+  });
+  // Weapon tabs
+  document.querySelectorAll('.gs-toptab').forEach(t => {
+    t.addEventListener('click', () => {
+      document.querySelectorAll('.gs-toptab').forEach(x => x.classList.remove('active'));
+      t.classList.add('active');
+    });
+  });
+  // Sidebar icons
+  document.querySelectorAll('.gs-sicon').forEach(i => {
+    i.addEventListener('click', () => {
+      document.querySelectorAll('.gs-sicon').forEach(x => x.classList.remove('active'));
+      i.classList.add('active');
+    });
+  });
+  // Sliders
+  document.querySelectorAll('.gs-slider-track').forEach(track => {
+    const fill = track.querySelector('.gs-slider-fill');
+    const valEl = track.closest('.gs-slider-wrap')?.querySelector('.gs-slider-val');
+    let drag = false;
+    const upd = e => {
+      const r = track.getBoundingClientRect();
+      const x = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
+      fill.style.width = (x*100)+'%';
+      if (valEl) {
+        const t = valEl.textContent;
+        if (t.includes('%')) valEl.textContent = Math.round(x*100)+'%';
+        else if (t.includes('°')) valEl.textContent = Math.round(x*180)+'°';
+        else valEl.textContent = Math.round(x*100);
+      }
+    };
+    track.addEventListener('mousedown', e => { drag=true; upd(e); });
+    document.addEventListener('mousemove', e => { if(drag) upd(e); });
+    document.addEventListener('mouseup', () => drag=false);
+  });
+</script>
+</body>
+</html>
