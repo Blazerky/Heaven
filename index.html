@@ -2,43 +2,60 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>БУРМАЛДА</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>БУРМАЛДА — крупные фото</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: #000; width: 100vw; height: 100vh; overflow: hidden; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      user-select: none;
+    }
+
+    body {
+      background: #000000;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* титульный текст — вращающаяся неоновая надпись */
     .title {
       position: fixed;
       top: 50%;
       left: 50%;
       transform-origin: center center;
-      font-family: Impact, 'Arial Black', sans-serif;
-      font-size: clamp(48px, 10vw, 110px);
+      font-family: Impact, 'Arial Black', 'Helvetica Black', sans-serif;
+      font-size: clamp(56px, 12vw, 130px);
       font-weight: 900;
       color: #cc0000;
-      -webkit-text-stroke: 3px #ff0000;
+      -webkit-text-stroke: 3px #ff2a2a;
       text-shadow:
-        0 0 10px #ff0000,
-        0 0 25px #ff2200,
-        0 0 50px #ff0000,
-        -4px -4px 0 #ff1100,
-         4px -4px 0 #ff1100,
-        -4px  4px 0 #ff1100,
-         4px  4px 0 #ff1100;
-      letter-spacing: 8px;
-      z-index: 100;
+        0 0 12px #ff0000,
+        0 0 28px #ff3300,
+        0 0 55px #ff0000,
+        -5px -5px 0 #ff2200,
+         5px -5px 0 #ff2200,
+        -5px  5px 0 #ff2200,
+         5px  5px 0 #ff2200;
+      letter-spacing: 10px;
+      z-index: 200;
       white-space: nowrap;
       pointer-events: none;
-      user-select: none;
+      text-transform: uppercase;
     }
+
+    /* стиль фото — увеличенный размер, лёгкая рамка */
     .photo {
       position: fixed;
       object-fit: cover;
-      border-radius: 8px;
-      border: 2px solid rgba(255,255,255,0.12);
-      opacity: 0;
+      border-radius: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 0 0 0 2px rgba(255, 40, 0, 0.3);
       pointer-events: none;
       z-index: 10;
+      will-change: transform, left, top, opacity;
     }
   </style>
 </head>
@@ -46,50 +63,127 @@
   <span class="title" id="title">БУРМАЛДА</span>
 
   <script>
-    const titleEl = document.getElementById('title');
-    const imgSrc = 'img/channels4_profile (2).jpg';
-    const COUNT = 22;
-    function rand(min, max) { return Math.random() * (max - min) + min; }
-
-    let angle = 0;
-    function spin() {
-      angle += 1.2;
-      titleEl.style.transform = `translate(-50%, -50%) rotate(${angle}deg)`;
-      requestAnimationFrame(spin);
-    }
-    spin();
-
-    function animatePhoto(img) {
-      const W = window.innerWidth, H = window.innerHeight;
-      const size = parseFloat(img.style.width);
-      const startX = rand(-size, W);
-      const speed = rand(2.5, 6), rotSpeed = rand(-4, 4);
-      const swayAmp = rand(15, 55), swayFreq = rand(0.012, 0.035);
-      let y = -size - 20, rot = rand(0, 360), tick = rand(0, 200), opacity = 0;
-      img.style.left = startX + 'px';
-      img.style.top = (-size - 20) + 'px';
-      img.style.opacity = 0;
-      function step() {
-        y += speed; tick++; rot += rotSpeed;
-        const x = startX + Math.sin(tick * swayFreq) * swayAmp;
-        if (opacity < 1) opacity = Math.min(1, opacity + 0.04);
-        img.style.top = y + 'px'; img.style.left = x + 'px';
-        img.style.opacity = opacity;
-        img.style.transform = `rotate(${rot}deg)`;
-        if (y < H + size + 20) requestAnimationFrame(step);
-        else { img.style.opacity = 0; setTimeout(() => animatePhoto(img), rand(0, 1500)); }
+    (function() {
+      const titleEl = document.getElementById('title');
+      
+      // ———— НАСТРОЙКИ ГАЛЕРЕИ ————
+      // КОЛИЧЕСТВО ФОТО (меньше, чем было — 22 → 10)
+      const COUNT = 10;
+      // РАЗМЕР ФОТО: теперь КРУПНЕЕ (от 140px до 220px)
+      const MIN_SIZE = 140;
+      const MAX_SIZE = 220;
+      
+      // Путь к изображению (та же картинка, что и в исходнике)
+      const imgSrc = 'img/channels4_profile (2).jpg';
+      
+      // Вспомогательная функция случайного числа
+      function rand(min, max) {
+        return Math.random() * (max - min) + min;
       }
-      requestAnimationFrame(step);
-    }
-
-    for (let i = 0; i < COUNT; i++) {
-      const img = document.createElement('img');
-      img.src = imgSrc; img.className = 'photo';
-      const size = rand(65, 120);
-      img.style.width = size + 'px'; img.style.height = size + 'px';
-      document.body.appendChild(img);
-      setTimeout(() => animatePhoto(img), i * rand(80, 350));
-    }
+      
+      // ---------- ВРАЩЕНИЕ ЗАГОЛОВКА ----------
+      let angle = 0;
+      function spinTitle() {
+        angle += 1.1;       // плавное вращение, чуть медленнее для эстетики
+        titleEl.style.transform = `translate(-50%, -50%) rotate(${angle}deg)`;
+        requestAnimationFrame(spinTitle);
+      }
+      spinTitle();
+      
+      // ---------- АНИМАЦИЯ ОДНОГО ФОТО (парящий подъём с волной) ----------
+      function animatePhoto(imgElement) {
+        const W = window.innerWidth;
+        const H = window.innerHeight;
+        
+        // реальный размер картинки (ширина/высота одинаковы, т.к. задаём равные стороны)
+        const imgSize = parseFloat(imgElement.style.width);
+        
+        // Стартовая позиция по X — случайная в пределах окна + возможный вылет за края (но красиво)
+        let startX = rand(-imgSize * 0.5, W + imgSize * 0.5);
+        // Скорость движения вверх (от 3 до 7.5) — чуть быстрее, чтобы крупные фото не залипали
+        const speed = rand(3.2, 7.8);
+        // Скорость вращения фото (градусов на кадр) — от -5 до +5
+        const rotSpeed = rand(-5.2, 5.2);
+        // Параметры синусоидального покачивания (амплитуда + частота)
+        const swayAmp = rand(20, 70);
+        const swayFreq = rand(0.009, 0.032);
+        
+        // Начальное положение: сразу за верхней границей экрана
+        let y = -imgSize - 25;
+        let rotation = rand(0, 360);
+        let tick = rand(0, 300);    // случайное смещение для разнообразия траекторий
+        let opacity = 0;
+        
+        // Установка начальных стилей
+        imgElement.style.left = startX + 'px';
+        imgElement.style.top = y + 'px';
+        imgElement.style.opacity = 0;
+        imgElement.style.transform = `rotate(${rotation}deg)`;
+        
+        function step() {
+          // движение вверх: y увеличивается (едет вниз по экрану)
+          y += speed;
+          tick += 1;
+          rotation += rotSpeed;
+          
+          // Горизонтальное «плавание» с помощью синуса
+          const driftX = Math.sin(tick * swayFreq) * swayAmp;
+          let currentX = startX + driftX;
+          
+          // Постепенное появление (за первые ~25 кадров становится полностью видимым)
+          if (opacity < 1) {
+            opacity = Math.min(1, opacity + 0.045);
+          }
+          
+          // Применяем новые координаты и стили
+          imgElement.style.top = y + 'px';
+          imgElement.style.left = currentX + 'px';
+          imgElement.style.opacity = opacity;
+          imgElement.style.transform = `rotate(${rotation}deg)`;
+          
+          // Условие продолжения: пока фото не ушло ниже экрана + запас
+          if (y < H + imgSize + 50) {
+            requestAnimationFrame(step);
+          } else {
+            // Фото полностью покинуло видимую область — исчезаем и перезапускаем после паузы
+            imgElement.style.opacity = 0;
+            setTimeout(() => {
+              animatePhoto(imgElement);
+            }, rand(400, 1800));   // пауза перед новым появлением от 0.4 до 1.8 секунд
+          }
+        }
+        
+        requestAnimationFrame(step);
+      }
+      
+      // ---------- СОЗДАНИЕ ВСЕХ ЭЛЕМЕНТОВ (увеличенный размер, уменьшенное количество) ----------
+      for (let i = 0; i < COUNT; i++) {
+        const img = document.createElement('img');
+        img.src = imgSrc;
+        img.className = 'photo';
+        img.alt = 'Бурмалда стиль';
+        
+        // Устанавливаем крупный размер (квадратные фото, но в CSS можно менять)
+        const size = rand(MIN_SIZE, MAX_SIZE);
+        img.style.width = size + 'px';
+        img.style.height = size + 'px';
+        
+        // Добавляем плавность для трансформаций
+        img.style.transition = 'opacity 0.2s ease';
+        document.body.appendChild(img);
+        
+        // Старт анимации с задержкой, чтобы фото выходили не одновременно, а волной
+        setTimeout(() => {
+          animatePhoto(img);
+        }, i * rand(90, 400));
+      }
+      
+      // Дополнительная эстетика: при изменении размеров окна не ломаем позиции (пересчёт не требуется,
+      // потому что animatePhoto использует актуальные window.innerWidth/Height при каждом вызове,
+      // а циклы перезапускаются автоматически через animatePhoto.
+      // Но важно: при ресайзе некоторые фото могут "уехать", но это лишь добавит хаоса — в духе стиля.
+      // Для идеальной адаптивности оставляем как есть.
+    })();
   </script>
 </body>
 </html>
