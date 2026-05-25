@@ -20,7 +20,7 @@
       position: relative;
     }
 
-    /* титульный текст — вращающаяся неоновая надпись */
+    /* вращающийся неоновый заголовок */
     .title {
       position: fixed;
       top: 50%;
@@ -46,16 +46,17 @@
       text-transform: uppercase;
     }
 
-    /* стиль фото — увеличенный размер, лёгкая рамка */
+    /* стили для фото — крупные, с рамкой и тенью */
     .photo {
       position: fixed;
       object-fit: cover;
-      border-radius: 16px;
-      border: 2px solid rgba(255, 255, 255, 0.2);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 0 0 0 2px rgba(255, 40, 0, 0.3);
+      border-radius: 20px;
+      border: 2px solid rgba(255, 255, 255, 0.25);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6), 0 0 0 2px rgba(255, 60, 0, 0.4);
       pointer-events: none;
       z-index: 10;
       will-change: transform, left, top, opacity;
+      background-color: #2a0000;
     }
   </style>
 </head>
@@ -66,123 +67,127 @@
     (function() {
       const titleEl = document.getElementById('title');
       
-      // ———— НАСТРОЙКИ ГАЛЕРЕИ ————
-      // КОЛИЧЕСТВО ФОТО (меньше, чем было — 22 → 10)
-      const COUNT = 10;
-      // РАЗМЕР ФОТО: теперь КРУПНЕЕ (от 140px до 220px)
-      const MIN_SIZE = 140;
-      const MAX_SIZE = 220;
+      // ----- НАСТРОЙКИ (меньше фото, больше размер) -----
+      const COUNT = 10;                 // было 22 → стало 10
+      const MIN_SIZE = 140;            // минимальный размер фото (пиксели)
+      const MAX_SIZE = 220;            // максимальный размер фото
       
-      // Путь к изображению (та же картинка, что и в исходнике)
-      const imgSrc = 'img/channels4_profile (2).jpg';
+      // Путь к вашему изображению в папке img (кодируем пробелы и скобки, чтобы гарантированно работать на GitHub Pages)
+      // Оригинальное имя: channels4_profile (2).jpg
+      // Кодируем: пробел -> %20, '(' -> %28, ')' -> %29
+      const IMG_PATH = 'img/channels4_profile%20%282%29.jpg';
       
-      // Вспомогательная функция случайного числа
+      // Резервное изображение на случай, если основное не загрузится (любое доступное в интернете, но сохраняем стиль)
+      const FALLBACK_IMG = 'https://picsum.photos/id/104/400/400';  // пейзаж, чтобы не ломать анимацию
+      
       function rand(min, max) {
         return Math.random() * (max - min) + min;
       }
       
-      // ---------- ВРАЩЕНИЕ ЗАГОЛОВКА ----------
+      // ---- ВРАЩЕНИЕ ЗАГОЛОВКА ----
       let angle = 0;
       function spinTitle() {
-        angle += 1.1;       // плавное вращение, чуть медленнее для эстетики
+        angle += 1.1;
         titleEl.style.transform = `translate(-50%, -50%) rotate(${angle}deg)`;
         requestAnimationFrame(spinTitle);
       }
       spinTitle();
       
-      // ---------- АНИМАЦИЯ ОДНОГО ФОТО (парящий подъём с волной) ----------
+      // ---- АНИМАЦИЯ ОДНОГО ФОТО (подъём с покачиванием) ----
       function animatePhoto(imgElement) {
         const W = window.innerWidth;
         const H = window.innerHeight;
-        
-        // реальный размер картинки (ширина/высота одинаковы, т.к. задаём равные стороны)
         const imgSize = parseFloat(imgElement.style.width);
         
-        // Стартовая позиция по X — случайная в пределах окна + возможный вылет за края (но красиво)
-        let startX = rand(-imgSize * 0.5, W + imgSize * 0.5);
-        // Скорость движения вверх (от 3 до 7.5) — чуть быстрее, чтобы крупные фото не залипали
-        const speed = rand(3.2, 7.8);
-        // Скорость вращения фото (градусов на кадр) — от -5 до +5
-        const rotSpeed = rand(-5.2, 5.2);
-        // Параметры синусоидального покачивания (амплитуда + частота)
-        const swayAmp = rand(20, 70);
-        const swayFreq = rand(0.009, 0.032);
+        // Стартовая позиция по X (случайная, с учётом возможного вылета за края)
+        let startX = rand(-imgSize * 0.6, W + imgSize * 0.6);
+        const speed = rand(3.2, 7.6);        // скорость движения вниз
+        const rotSpeed = rand(-5.5, 5.5);    // скорость вращения
+        const swayAmp = rand(25, 80);        // амплитуда покачивания
+        const swayFreq = rand(0.008, 0.035); // частота покачивания
         
-        // Начальное положение: сразу за верхней границей экрана
-        let y = -imgSize - 25;
+        let y = -imgSize - 30;      // начинаем выше экрана
         let rotation = rand(0, 360);
-        let tick = rand(0, 300);    // случайное смещение для разнообразия траекторий
+        let tick = rand(0, 360);
         let opacity = 0;
         
-        // Установка начальных стилей
         imgElement.style.left = startX + 'px';
         imgElement.style.top = y + 'px';
         imgElement.style.opacity = 0;
         imgElement.style.transform = `rotate(${rotation}deg)`;
         
         function step() {
-          // движение вверх: y увеличивается (едет вниз по экрану)
           y += speed;
           tick += 1;
           rotation += rotSpeed;
           
-          // Горизонтальное «плавание» с помощью синуса
+          // горизонтальное «плавание»
           const driftX = Math.sin(tick * swayFreq) * swayAmp;
           let currentX = startX + driftX;
           
-          // Постепенное появление (за первые ~25 кадров становится полностью видимым)
+          // плавное появление
           if (opacity < 1) {
             opacity = Math.min(1, opacity + 0.045);
           }
           
-          // Применяем новые координаты и стили
           imgElement.style.top = y + 'px';
           imgElement.style.left = currentX + 'px';
           imgElement.style.opacity = opacity;
           imgElement.style.transform = `rotate(${rotation}deg)`;
           
-          // Условие продолжения: пока фото не ушло ниже экрана + запас
-          if (y < H + imgSize + 50) {
+          // если фото ушло за нижнюю границу экрана — перезапускаем анимацию
+          if (y < H + imgSize + 60) {
             requestAnimationFrame(step);
           } else {
-            // Фото полностью покинуло видимую область — исчезаем и перезапускаем после паузы
             imgElement.style.opacity = 0;
+            // пауза от 0.5 до 1.8 секунд, затем новый проход
             setTimeout(() => {
               animatePhoto(imgElement);
-            }, rand(400, 1800));   // пауза перед новым появлением от 0.4 до 1.8 секунд
+            }, rand(500, 1800));
           }
         }
         
         requestAnimationFrame(step);
       }
       
-      // ---------- СОЗДАНИЕ ВСЕХ ЭЛЕМЕНТОВ (увеличенный размер, уменьшенное количество) ----------
+      // ---- СОЗДАНИЕ ФОТО (с обработкой ошибок загрузки) ----
       for (let i = 0; i < COUNT; i++) {
         const img = document.createElement('img');
-        img.src = imgSrc;
         img.className = 'photo';
-        img.alt = 'Бурмалда стиль';
+        img.alt = 'Бурмалда';
         
-        // Устанавливаем крупный размер (квадратные фото, но в CSS можно менять)
+        // Устанавливаем крупный размер
         const size = rand(MIN_SIZE, MAX_SIZE);
         img.style.width = size + 'px';
         img.style.height = size + 'px';
         
-        // Добавляем плавность для трансформаций
-        img.style.transition = 'opacity 0.2s ease';
+        // Функция загрузки изображения с fallback
+        const loadImage = (src) => {
+          img.src = src;
+        };
+        
+        // Пытаемся загрузить локальное изображение
+        loadImage(IMG_PATH);
+        
+        // Если локальное изображение не загрузилось (404 или ошибка) — используем fallback
+        img.onerror = function() {
+          // Чтобы избежать бесконечного цикла, проверяем, не fallback ли уже
+          if (img.src !== FALLBACK_IMG) {
+            console.warn('Не удалось загрузить основное фото, используем резервное');
+            img.src = FALLBACK_IMG;
+          }
+        };
+        
         document.body.appendChild(img);
         
-        // Старт анимации с задержкой, чтобы фото выходили не одновременно, а волной
+        // Запускаем анимацию с разной задержкой, чтобы фото выходили волной
         setTimeout(() => {
           animatePhoto(img);
         }, i * rand(90, 400));
       }
       
-      // Дополнительная эстетика: при изменении размеров окна не ломаем позиции (пересчёт не требуется,
-      // потому что animatePhoto использует актуальные window.innerWidth/Height при каждом вызове,
-      // а циклы перезапускаются автоматически через animatePhoto.
-      // Но важно: при ресайзе некоторые фото могут "уехать", но это лишь добавит хаоса — в духе стиля.
-      // Для идеальной адаптивности оставляем как есть.
+      // Небольшой лог для уверенности (в консоли браузера можно проверить)
+      console.log(`Создано ${COUNT} крупных фото (размер ${MIN_SIZE}-${MAX_SIZE}px). Путь к изображению: ${IMG_PATH}`);
     })();
   </script>
 </body>
