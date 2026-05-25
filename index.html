@@ -3,192 +3,181 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title> СЛАВА ЛУЧШИЙ ЧЕЛОВЕК В МИРЕ </title>
+  <title>БУРМАЛДА — кликабельный титул</title>
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      user-select: none;
+      user-select: none; /* избегаем случайного выделения, но клик остаётся */
     }
 
     body {
-      background: #000000;
+      background: #000;
       width: 100vw;
       height: 100vh;
       overflow: hidden;
       position: relative;
     }
 
-    /* вращающийся неоновый заголовок */
+    /* Главный заголовок: теперь кликабельный, с указателем мыши */
     .title {
       position: fixed;
       top: 50%;
       left: 50%;
       transform-origin: center center;
-      font-family: Impact, 'Arial Black', 'Helvetica Black', sans-serif;
-      font-size: clamp(56px, 12vw, 130px);
+      font-family: Impact, 'Arial Black', sans-serif;
+      font-size: clamp(48px, 10vw, 110px);
       font-weight: 900;
       color: #cc0000;
-      -webkit-text-stroke: 3px #ff2a2a;
+      -webkit-text-stroke: 3px #ff0000;
       text-shadow:
-        0 0 12px #ff0000,
-        0 0 28px #ff3300,
-        0 0 55px #ff0000,
-        -5px -5px 0 #ff2200,
-         5px -5px 0 #ff2200,
-        -5px  5px 0 #ff2200,
-         5px  5px 0 #ff2200;
-      letter-spacing: 10px;
-      z-index: 200;
+        0 0 10px #ff0000,
+        0 0 25px #ff2200,
+        0 0 50px #ff0000,
+        -4px -4px 0 #ff1100,
+         4px -4px 0 #ff1100,
+        -4px  4px 0 #ff1100,
+         4px  4px 0 #ff1100;
+      letter-spacing: 8px;
+      z-index: 200;          /* выше летающих фото */
       white-space: nowrap;
-      pointer-events: none;
-      text-transform: uppercase;
+      cursor: pointer;       /* 👈 визуально кликабельно */
+      transition: transform 0.05s linear, text-shadow 0.2s ease;
+      /* pointer-events: none — УДАЛЕНО, теперь элементы реагируют на клик */
     }
 
-    /* стили для фото — крупные, с рамкой и тенью */
+    /* эффект лёгкого "вдавливания" при нажатии */
+    .title:active {
+      transform: translate(-50%, -50%) scale(0.98);
+      text-shadow: 0 0 20px #ff4400, 0 0 40px #ff0000;
+    }
+
+    /* стили для летающих фото */
     .photo {
       position: fixed;
       object-fit: cover;
-      border-radius: 20px;
-      border: 2px solid rgba(255, 255, 255, 0.25);
-      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6), 0 0 0 2px rgba(255, 60, 0, 0.4);
-      pointer-events: none;
+      border-radius: 8px;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      opacity: 0;
+      pointer-events: none;   /* картинки не мешают клику по заголовку */
       z-index: 10;
       will-change: transform, left, top, opacity;
-      background-color: #2a0000;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.6);
     }
   </style>
 </head>
 <body>
+
+  <!-- центральная кликабельная надпись -->
   <span class="title" id="title">БУРМАЛДА</span>
 
   <script>
-    (function() {
-      const titleEl = document.getElementById('title');
-      
-      // ----- НАСТРОЙКИ (меньше фото, больше размер) -----
-      const COUNT = 10;                 // было 22 → стало 10
-      const MIN_SIZE = 140;            // минимальный размер фото (пиксели)
-      const MAX_SIZE = 220;            // максимальный размер фото
-      
-      // Путь к вашему изображению в папке img (кодируем пробелы и скобки, чтобы гарантированно работать на GitHub Pages)
-      // Оригинальное имя: channels4_profile (2).jpg
-      // Кодируем: пробел -> %20, '(' -> %28, ')' -> %29
-      const IMG_PATH = 'img/channels4_profile%20%282%29.jpg';
-      
-      // Резервное изображение на случай, если основное не загрузится (любое доступное в интернете, но сохраняем стиль)
-      const FALLBACK_IMG = 'https://picsum.photos/id/104/400/400';  // пейзаж, чтобы не ломать анимацию
-      
-      function rand(min, max) {
-        return Math.random() * (max - min) + min;
-      }
-      
-      // ---- ВРАЩЕНИЕ ЗАГОЛОВКА ----
-      let angle = 0;
-      function spinTitle() {
-        angle += 1.1;
-        titleEl.style.transform = `translate(-50%, -50%) rotate(${angle}deg)`;
-        requestAnimationFrame(spinTitle);
-      }
-      spinTitle();
-      
-      // ---- АНИМАЦИЯ ОДНОГО ФОТО (подъём с покачиванием) ----
-      function animatePhoto(imgElement) {
-        const W = window.innerWidth;
-        const H = window.innerHeight;
-        const imgSize = parseFloat(imgElement.style.width);
-        
-        // Стартовая позиция по X (случайная, с учётом возможного вылета за края)
-        let startX = rand(-imgSize * 0.6, W + imgSize * 0.6);
-        const speed = rand(3.2, 7.6);        // скорость движения вниз
-        const rotSpeed = rand(-5.5, 5.5);    // скорость вращения
-        const swayAmp = rand(25, 80);        // амплитуда покачивания
-        const swayFreq = rand(0.008, 0.035); // частота покачивания
-        
-        let y = -imgSize - 30;      // начинаем выше экрана
-        let rotation = rand(0, 360);
-        let tick = rand(0, 360);
-        let opacity = 0;
-        
-        imgElement.style.left = startX + 'px';
-        imgElement.style.top = y + 'px';
-        imgElement.style.opacity = 0;
-        imgElement.style.transform = `rotate(${rotation}deg)`;
-        
-        function step() {
-          y += speed;
-          tick += 1;
-          rotation += rotSpeed;
-          
-          // горизонтальное «плавание»
-          const driftX = Math.sin(tick * swayFreq) * swayAmp;
-          let currentX = startX + driftX;
-          
-          // плавное появление
-          if (opacity < 1) {
-            opacity = Math.min(1, opacity + 0.045);
-          }
-          
-          imgElement.style.top = y + 'px';
-          imgElement.style.left = currentX + 'px';
-          imgElement.style.opacity = opacity;
-          imgElement.style.transform = `rotate(${rotation}deg)`;
-          
-          // если фото ушло за нижнюю границу экрана — перезапускаем анимацию
-          if (y < H + imgSize + 60) {
-            requestAnimationFrame(step);
-          } else {
-            imgElement.style.opacity = 0;
-            // пауза от 0.5 до 1.8 секунд, затем новый проход
-            setTimeout(() => {
-              animatePhoto(imgElement);
-            }, rand(500, 1800));
-          }
+    // 1) Получаем элемент заголовка
+    const titleEl = document.getElementById('title');
+
+    // 2) ДОБАВЛЯЕМ ПЕРЕХОД ПО ССЫЛКЕ ПРИ КЛИКЕ (сохраняя вращение)
+    //    открываем в новой вкладке, чтобы не терять анимацию страницы
+    titleEl.addEventListener('click', (event) => {
+      event.stopPropagation();   // на всякий случай
+      window.open('https://guns.lol/1337kid', '_blank');
+    });
+
+    // 3) Вращение заголовка (как и было, но с учетом кликабельности)
+    let angle = 0;
+    function spin() {
+      angle += 1.2;   // скорость вращения
+      // применяем transform, сохраняя центрирование + вращение
+      titleEl.style.transform = `translate(-50%, -50%) rotate(${angle}deg)`;
+      requestAnimationFrame(spin);
+    }
+    spin();
+
+    // 4) все настройки для летающих фото (полностью идентично оригиналу, но путь к картинке оставляем)
+    const imgSrc = 'img/channels4_profile (2).jpg';  // оригинальный относительный путь
+    const COUNT = 22;          // количество плавающих изображений
+
+    // вспомогательная функция случайного числа
+    function rand(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    // анимация одного фото: бесконечный цикл подъёма с волнообразным смещением
+    function animatePhoto(img) {
+      const W = window.innerWidth;
+      const H = window.innerHeight;
+      const size = parseFloat(img.style.width);
+
+      // начальная позиция по X (может быть за пределами экрана)
+      const startX = rand(-size, W);
+      // вертикальная скорость
+      const speed = rand(2.5, 6);
+      // скорость вращения
+      const rotSpeed = rand(-4, 4);
+      // параметры "дрожания" по горизонтали
+      const swayAmp = rand(15, 55);
+      const swayFreq = rand(0.012, 0.035);
+
+      let y = -size - 20;           // стартуем чуть выше верхней границы
+      let rot = rand(0, 360);
+      let tick = rand(0, 200);
+      let opacity = 0;
+
+      // начальная установка
+      img.style.left = startX + 'px';
+      img.style.top = (-size - 20) + 'px';
+      img.style.opacity = 0;
+      img.style.transform = `rotate(${rot}deg)`;
+
+      function step() {
+        y += speed;
+        tick++;
+        rot += rotSpeed;
+
+        // синусоидальное отклонение от стартовой позиции X
+        const x = startX + Math.sin(tick * swayFreq) * swayAmp;
+
+        // плавное появление на старте
+        if (opacity < 1) opacity = Math.min(1, opacity + 0.04);
+
+        // применяем новые координаты и поворот
+        img.style.top = y + 'px';
+        img.style.left = x + 'px';
+        img.style.opacity = opacity;
+        img.style.transform = `rotate(${rot}deg)`;
+
+        // если изображение ещё не ушло за нижнюю границу с запасом — продолжаем
+        if (y < H + size + 20) {
+          requestAnimationFrame(step);
+        } else {
+          // когда фото полностью покинуло экран снизу — сбрасываем видимость
+          img.style.opacity = 0;
+          // перезапускаем через случайную задержку (создаём непрерывный поток)
+          setTimeout(() => animatePhoto(img), rand(0, 1500));
         }
-        
-        requestAnimationFrame(step);
       }
-      
-      // ---- СОЗДАНИЕ ФОТО (с обработкой ошибок загрузки) ----
-      for (let i = 0; i < COUNT; i++) {
-        const img = document.createElement('img');
-        img.className = 'photo';
-        img.alt = 'Бурмалда';
-        
-        // Устанавливаем крупный размер
-        const size = rand(MIN_SIZE, MAX_SIZE);
-        img.style.width = size + 'px';
-        img.style.height = size + 'px';
-        
-        // Функция загрузки изображения с fallback
-        const loadImage = (src) => {
-          img.src = src;
-        };
-        
-        // Пытаемся загрузить локальное изображение
-        loadImage(IMG_PATH);
-        
-        // Если локальное изображение не загрузилось (404 или ошибка) — используем fallback
-        img.onerror = function() {
-          // Чтобы избежать бесконечного цикла, проверяем, не fallback ли уже
-          if (img.src !== FALLBACK_IMG) {
-            console.warn('Не удалось загрузить основное фото, используем резервное');
-            img.src = FALLBACK_IMG;
-          }
-        };
-        
-        document.body.appendChild(img);
-        
-        // Запускаем анимацию с разной задержкой, чтобы фото выходили волной
-        setTimeout(() => {
-          animatePhoto(img);
-        }, i * rand(90, 400));
-      }
-      
-      // Небольшой лог для уверенности (в консоли браузера можно проверить)
-      console.log(`Создано ${COUNT} крупных фото (размер ${MIN_SIZE}-${MAX_SIZE}px). Путь к изображению: ${IMG_PATH}`);
-    })();
+
+      requestAnimationFrame(step);
+    }
+
+    // Генерация COUNT элементов <img> и запуск их анимации с временным сдвигом
+    for (let i = 0; i < COUNT; i++) {
+      const img = document.createElement('img');
+      img.src = imgSrc;
+      img.className = 'photo';
+      // случайный размер от 65 до 120 пикселей
+      const size = rand(65, 120);
+      img.style.width = size + 'px';
+      img.style.height = size + 'px';
+      document.body.appendChild(img);
+
+      // ступенчатый запуск, чтобы фото появлялись не все сразу
+      setTimeout(() => animatePhoto(img), i * rand(80, 350));
+    }
+
+    // (опционально) при изменении размеров окна не требуется пересоздавать фото,
+    // но анимация подстроится автоматически, так как каждый цикл берёт свежие W/H
+    // также добавим небольшую защиту, чтобы избежать накопления лишних кадров при ресайзе — не критично
   </script>
 </body>
 </html>
