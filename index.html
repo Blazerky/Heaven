@@ -20,7 +20,7 @@
       position: relative;
     }
 
-    /* Главный заголовок: теперь кликабельный, с указателем мыши */
+    /* Главный заголовок: кликабельный, с указателем мыши */
     .title {
       position: fixed;
       top: 50%;
@@ -42,9 +42,8 @@
       letter-spacing: 8px;
       z-index: 200;          /* выше летающих фото */
       white-space: nowrap;
-      cursor: pointer;       /* 👈 визуально кликабельно */
+      cursor: pointer;       /* визуально кликабельно */
       transition: transform 0.05s linear, text-shadow 0.2s ease;
-      /* pointer-events: none — УДАЛЕНО, теперь элементы реагируют на клик */
     }
 
     /* эффект лёгкого "вдавливания" при нажатии */
@@ -69,61 +68,52 @@
 </head>
 <body>
 
-  <!-- центральная кликабельная надпись -->
-  <span class="title" id="title">СЕЛА ДАЛА</span>
+  <!-- центральная кликабельная надпись (текст изменён) -->
+  <span class="title" id="title">Села-дала</span>
 
   <script>
-    // 1) Получаем элемент заголовка
+    // Получаем элемент заголовка
     const titleEl = document.getElementById('title');
 
-    // 2) ДОБАВЛЯЕМ ПЕРЕХОД ПО ССЫЛКЕ ПРИ КЛИКЕ (сохраняя вращение)
-    //    открываем в новой вкладке, чтобы не терять анимацию страницы
+    // Открытие ссылки при клике (сохраняя вращение)
     titleEl.addEventListener('click', (event) => {
-      event.stopPropagation();   // на всякий случай
+      event.stopPropagation();
       window.open('https://guns.lol/1337kid', '_blank');
     });
 
-    // 3) Вращение заголовка (как и было, но с учетом кликабельности)
+    // Вращение заголовка
     let angle = 0;
     function spin() {
       angle += 1.2;   // скорость вращения
-      // применяем transform, сохраняя центрирование + вращение
       titleEl.style.transform = `translate(-50%, -50%) rotate(${angle}deg)`;
       requestAnimationFrame(spin);
     }
     spin();
 
-    // 4) все настройки для летающих фото (полностью идентично оригиналу, но путь к картинке оставляем)
-    const imgSrc = 'img/channels4_profile (2).jpg';  // оригинальный относительный путь
-    const COUNT = 22;          // количество плавающих изображений
+    // Настройки для летающих фото
+    const imgSrc = 'img/channels4_profile (2).jpg';  // относительный путь
+    const COUNT = 22;
 
-    // вспомогательная функция случайного числа
     function rand(min, max) {
       return Math.random() * (max - min) + min;
     }
 
-    // анимация одного фото: бесконечный цикл подъёма с волнообразным смещением
     function animatePhoto(img) {
       const W = window.innerWidth;
       const H = window.innerHeight;
       const size = parseFloat(img.style.width);
 
-      // начальная позиция по X (может быть за пределами экрана)
       const startX = rand(-size, W);
-      // вертикальная скорость
       const speed = rand(2.5, 6);
-      // скорость вращения
       const rotSpeed = rand(-4, 4);
-      // параметры "дрожания" по горизонтали
       const swayAmp = rand(15, 55);
       const swayFreq = rand(0.012, 0.035);
 
-      let y = -size - 20;           // стартуем чуть выше верхней границы
+      let y = -size - 20;
       let rot = rand(0, 360);
       let tick = rand(0, 200);
       let opacity = 0;
 
-      // начальная установка
       img.style.left = startX + 'px';
       img.style.top = (-size - 20) + 'px';
       img.style.opacity = 0;
@@ -134,25 +124,19 @@
         tick++;
         rot += rotSpeed;
 
-        // синусоидальное отклонение от стартовой позиции X
         const x = startX + Math.sin(tick * swayFreq) * swayAmp;
 
-        // плавное появление на старте
         if (opacity < 1) opacity = Math.min(1, opacity + 0.04);
 
-        // применяем новые координаты и поворот
         img.style.top = y + 'px';
         img.style.left = x + 'px';
         img.style.opacity = opacity;
         img.style.transform = `rotate(${rot}deg)`;
 
-        // если изображение ещё не ушло за нижнюю границу с запасом — продолжаем
         if (y < H + size + 20) {
           requestAnimationFrame(step);
         } else {
-          // когда фото полностью покинуло экран снизу — сбрасываем видимость
           img.style.opacity = 0;
-          // перезапускаем через случайную задержку (создаём непрерывный поток)
           setTimeout(() => animatePhoto(img), rand(0, 1500));
         }
       }
@@ -160,24 +144,17 @@
       requestAnimationFrame(step);
     }
 
-    // Генерация COUNT элементов <img> и запуск их анимации с временным сдвигом
     for (let i = 0; i < COUNT; i++) {
       const img = document.createElement('img');
       img.src = imgSrc;
       img.className = 'photo';
-      // случайный размер от 65 до 120 пикселей
       const size = rand(65, 120);
       img.style.width = size + 'px';
       img.style.height = size + 'px';
       document.body.appendChild(img);
 
-      // ступенчатый запуск, чтобы фото появлялись не все сразу
       setTimeout(() => animatePhoto(img), i * rand(80, 350));
     }
-
-    // (опционально) при изменении размеров окна не требуется пересоздавать фото,
-    // но анимация подстроится автоматически, так как каждый цикл берёт свежие W/H
-    // также добавим небольшую защиту, чтобы избежать накопления лишних кадров при ресайзе — не критично
   </script>
 </body>
 </html>
