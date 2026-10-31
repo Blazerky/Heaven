@@ -1,123 +1,36 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>СЛАВА ЛУЧШИЙ ЧЕЛАВЕК В МИРЕ</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      user-select: none;
-    }
-    body {
-      background: #000;
-      width: 100vw;
-      height: 100vh;
-      overflow: hidden;
-      position: relative;
-    }
-    .title {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform-origin: center center;
-      font-family: Impact, 'Arial Black', sans-serif;
-      font-size: clamp(48px, 10vw, 110px);
-      font-weight: 900;
-      color: #cc0000;
-      -webkit-text-stroke: 3px #ff0000;
-      text-shadow: 0 0 10px #ff0000, 0 0 25px #ff2200, 0 0 50px #ff0000, -4px -4px 0 #ff1100, 4px -4px 0 #ff1100, -4px 4px 0 #ff1100, 4px 4px 0 #ff1100;
-      letter-spacing: 8px;
-      z-index: 200;
-      white-space: nowrap;
-      cursor: pointer;
-      transition: transform 0.05s linear, text-shadow 0.2s ease;
-    }
-    .title:active {
-      transform: translate(-50%, -50%) scale(0.98);
-      text-shadow: 0 0 20px #ff4400, 0 0 40px #ff0000;
-    }
-    .photo {
-      position: fixed;
-      object-fit: cover;
-      border-radius: 8px;
-      border: 2px solid rgba(255,255,255,0.2);
-      opacity: 0;
-      pointer-events: none;
-      z-index: 10;
-      will-change: transform, left, top, opacity;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.6);
-    }
-  </style>
+<meta charset="UTF-8">
+<title>Ухади от сюда</title>
+<style>
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: #111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+  }
+
+  .spin {
+    color: red;
+    font-size: 8vw;
+    font-weight: 900;
+    white-space: nowrap;
+    text-shadow: 0 0 20px rgba(255, 0, 0, 0.7);
+    animation: spin 2s linear infinite;
+  }
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+</style>
 </head>
 <body>
-  <span class="title" id="title">Села-дала</span>
-  <script>
-    const titleEl = document.getElementById('title');
-    titleEl.addEventListener('click', (event) => {
-      event.stopPropagation();
-      window.open('https://guns.lol/1337kid', '_blank');
-    });
-    let angle = 0;
-    function spin() {
-      angle += 1.2;
-      titleEl.style.transform = `translate(-50%, -50%) rotate(${angle}deg)`;
-      requestAnimationFrame(spin);
-    }
-    spin();
-    const imgSrc = 'img/channels4_profile (2).jpg';
-    const COUNT = 22;
-    function rand(min, max) {
-      return Math.random() * (max - min) + min;
-    }
-    function animatePhoto(img) {
-      const W = window.innerWidth;
-      const H = window.innerHeight;
-      const size = parseFloat(img.style.width);
-      const startX = rand(-size, W);
-      const speed = rand(2.5, 6);
-      const rotSpeed = rand(-4, 4);
-      const swayAmp = rand(15, 55);
-      const swayFreq = rand(0.012, 0.035);
-      let y = -size - 20;
-      let rot = rand(0, 360);
-      let tick = rand(0, 200);
-      let opacity = 0;
-      img.style.left = startX + 'px';
-      img.style.top = (-size - 20) + 'px';
-      img.style.opacity = 0;
-      img.style.transform = `rotate(${rot}deg)`;
-      function step() {
-        y += speed;
-        tick++;
-        rot += rotSpeed;
-        const x = startX + Math.sin(tick * swayFreq) * swayAmp;
-        if (opacity < 1) opacity = Math.min(1, opacity + 0.04);
-        img.style.top = y + 'px';
-        img.style.left = x + 'px';
-        img.style.opacity = opacity;
-        img.style.transform = `rotate(${rot}deg)`;
-        if (y < H + size + 20) {
-          requestAnimationFrame(step);
-        } else {
-          img.style.opacity = 0;
-          setTimeout(() => animatePhoto(img), rand(0, 1500));
-        }
-      }
-      requestAnimationFrame(step);
-    }
-    for (let i = 0; i < COUNT; i++) {
-      const img = document.createElement('img');
-      img.src = imgSrc;
-      img.className = 'photo';
-      const size = rand(65, 120);
-      img.style.width = size + 'px';
-      img.style.height = size + 'px';
-      document.body.appendChild(img);
-      setTimeout(() => animatePhoto(img), i * rand(80, 350));
-    }
-  </script>
+  <div class="spin">пошел нахуй</div>
 </body>
 </html>
